@@ -31,9 +31,62 @@ export function signalBadge(deal) {
   return badge;
 }
 
+// One original illustration per product family, drawn for this site and
+// shipped as local files — the board never loads anything from a network.
+const IMAGE_RULES = [
+  [/airpods pro|earbuds/i, "earbuds"],
+  [/airpods max|headphones/i, "headphones"],
+  [/watch/i, "watch"],
+  [/airtag/i, "tracker"],
+  [/odyssey|monitor/i, "monitor"],
+  [/ssd/i, "ssd"],
+  [/ipad|kindle|tablet/i, "tablet"],
+  [/iphone|smartphone|galaxy/i, "phone"],
+  [/switch|console/i, "console"],
+  [/vacuum/i, "vacuum"],
+  [/griddle/i, "griddle"],
+  [/slushi|frozen drink/i, "slushie"],
+  [/air fryer/i, "airfryer"],
+  [/coffee|keurig/i, "coffee"],
+  [/lego/i, "bricks"],
+  [/camper/i, "camper"],
+  [/speaker/i, "speaker"],
+  [/doorbell/i, "doorbell"],
+  [/macbook|laptop|omnibook|yoga|dell/i, "laptop"],
+  [/tv\b|television/i, "tv"],
+];
+const IMAGE_BY_CATEGORY = {
+  Audio: "headphones",
+  Wearables: "watch",
+  Computers: "laptop",
+  "Phones & Tablets": "phone",
+  TVs: "tv",
+  Gaming: "console",
+  "Smart Home": "speaker",
+  Home: "vacuum",
+  Kitchen: "airfryer",
+  Toys: "bricks",
+};
+export function imgFor(deal) {
+  for (const [pattern, name] of IMAGE_RULES) if (pattern.test(deal.title)) return name;
+  return IMAGE_BY_CATEGORY[deal.category] ?? "tv";
+}
+function productImg(deal, className) {
+  const img = document.createElement("img");
+  img.className = className;
+  img.src = `img/${imgFor(deal)}.jpg`;
+  img.alt = "";
+  img.loading = "lazy";
+  return img;
+}
+
 export function dealCard(deal, opts = {}) {
   const card = el("article", "card");
   card.id = `card-${deal.id}`;
+
+  const media = el("div", "card-media");
+  media.append(productImg(deal, "card-img"));
+  card.append(media);
 
   const top = el("div", "card-top");
   top.append(signalBadge(deal));
@@ -170,6 +223,7 @@ export function renderDetail(container, deal, allDeals) {
 
   wrap.append(el("h2", "detail-title", deal.title));
   wrap.append(el("p", "card-meta", `${deal.store} · ${deal.category}`));
+  wrap.append(productImg(deal, "detail-img"));
 
   const prices = el("div", "card-prices detail-prices");
   prices.append(el("span", "price-now", formatMoney(deal.price)));
@@ -248,6 +302,7 @@ export function renderTop5(container, deals) {
     .forEach((deal, i) => {
       const row = el("li", "top5-row");
       row.append(el("span", "top5-rank", String(i + 1)));
+      row.append(productImg(deal, "top5-thumb"));
       const link = el("a", "top5-link", deal.title);
       link.href = `#/deal/${deal.id}`;
       row.append(link);

@@ -53,7 +53,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 4px 20px 0;
   border-top: 1px solid var(--line);
 }
-.control-row { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 16px; }
+.control-row { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 16px; align-items: flex-start; }
 .control { display: flex; }
 .control.grow { flex: 1 1 260px; }
 .control-label {
@@ -64,7 +64,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   white-space: nowrap;
 }
 .control input, .control select {
-  min-height: 44px;
+  height: 46px;
   width: 100%;
   padding: 9px 12px;
   font-size: 15.5px;
@@ -229,6 +229,38 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .seller-name { font-size: 17px; font-weight: 750; }
 .seller-price { font-size: 15px; font-weight: 700; color: var(--low); font-variant-numeric: tabular-nums; }
 .seller-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+
+/* Top 5 strip: the day's best deals as a plain ranked list. */
+.top5 { max-width: 1120px; margin: 0 auto; padding: 18px 20px 4px; }
+.top5-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.top5-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+.top5-note { font-size: 13px; color: var(--muted); }
+.top5-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.top5-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.top5-rank { font-size: 14px; font-weight: 800; color: var(--faint); width: 18px; flex: none; font-variant-numeric: tabular-nums; }
+.top5-link { font-weight: 650; text-decoration: none; flex: 1 1 auto; }
+.top5-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.top5-store { font-size: 13.5px; color: var(--muted); flex: none; }
+.top5-price { font-weight: 750; flex: none; font-variant-numeric: tabular-nums; }
+.save-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 11px;
+  cursor: pointer;
+}
+.save-btn:hover { color: var(--ink); border-color: var(--faint); }
+.save-btn.saved { color: var(--ink); border-color: var(--ink); }
 .alt-box { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; }
 .alt-box h3 { font-size: 15.5px; margin: 0 0 6px; }
 .alt-line { font-size: 15px; margin: 4px 0; }

@@ -1,6 +1,7 @@
 // DealProof views: every render builds DOM nodes and sets text with
 // textContent, never innerHTML, so deal text can never become markup.
-import { discountPct, savings, formatMoney } from "./logic.js";
+import { discountPct, savings, scoreDeal, formatMoney } from "./logic.js";
+import { STORE_WINDOWS } from "./data.js";
 
 export const SIGNAL_LABEL = {
   "new-low": "Verified new low",
@@ -30,12 +31,18 @@ export function signalBadge(deal) {
   return badge;
 }
 
-export function dealCard(deal) {
+export function dealCard(deal, opts = {}) {
   const card = el("article", "card");
   card.id = `card-${deal.id}`;
 
   const top = el("div", "card-top");
   top.append(signalBadge(deal));
+  const saveBtn = el("button", `save-btn${opts.saved ? " saved" : ""}`, opts.saved ? "★ Saved" : "☆ Save");
+  saveBtn.type = "button";
+  saveBtn.addEventListener("click", () => {
+    if (opts.onToggleSave) opts.onToggleSave(deal.id);
+  });
+  top.append(saveBtn);
   card.append(top);
 
   const title = el("h3", "card-title");
@@ -56,7 +63,7 @@ export function dealCard(deal) {
   card.append(el("p", "card-evidence", deal.evidence));
 
   const foot = el("div", "card-foot");
-  foot.append(el("span", "card-checked", `Checked ${fmtChecked(deal.checked)} · ${deal.source}`));
+  foot.append(el("span", "card-checked", `Checked ${fmtChecked(deal.checked)} · ${deal.source} · Sale ends ${STORE_WINDOWS[deal.store]}`));
   const links = el("span", "card-links");
   const detailsLink = el("a", "details-link", "Details →");
   detailsLink.href = `#/deal/${deal.id}`;
@@ -69,15 +76,15 @@ export function dealCard(deal) {
   foot.append(links);
   card.append(foot);
 
-  // The whole card opens the product page; only the store link leaves the site.
+  // The whole card opens the product page; only links and buttons act alone.
   card.addEventListener("click", (event) => {
-    if (event.target.closest("a")) return;
+    if (event.target.closest("a, button")) return;
     location.hash = `/deal/${deal.id}`;
   });
   return card;
 }
 
-export function renderBoard(container, list) {
+export function renderBoard(container, list, opts = {}) {
   container.replaceChildren();
   if (list.length === 0) {
     const empty = el("div", "empty-state");
@@ -89,18 +96,25 @@ export function renderBoard(container, list) {
     return;
   }
   const grid = el("div", "grid");
-  for (const deal of list) grid.append(dealCard(deal));
+  for (const deal of list) {
+    grid.append(
+      dealCard(deal, { saved: opts.saved?.has(deal.id) ?? false, onToggleSave: opts.onToggleSave }),
+    );
+  }
   container.append(grid);
 }
 
 // Groups of the same product sold at more than one store, cheapest first.
+// Grouped on the first three title words, so the same product listed with
+// slightly different wording at another store still lands in one group.
 export function priceCheckGroups(deals) {
-  const byTitle = new Map();
+  const byKey = new Map();
   for (const deal of deals) {
-    if (!byTitle.has(deal.title)) byTitle.set(deal.title, []);
-    byTitle.get(deal.title).push(deal);
+    const key = deal.title.toLowerCase().split(/\s+/).slice(0, 3).join(" ");
+    if (!byKey.has(key)) byKey.set(key, []);
+    byKey.get(key).push(deal);
   }
-  return [...byTitle.values()]
+  return [...byKey.values()]
     .filter((group) => group.length > 1)
     .map((group) => [...group].sort((a, b) => a.price - b.price));
 }
@@ -117,7 +131,8 @@ export function renderPriceChecks(container, deals) {
   );
   for (const group of priceCheckGroups(deals)) {
     const row = el("div", "compare-row");
-    row.append(el("h3", "compare-title", group[0].title));
+    const displayTitle = [...group].sort((a, b) => a.title.length - b.title.length)[0].title;
+    row.append(el("h3", "compare-title", displayTitle));
     const cells = el("div", "compare-cells");
     group.forEach((deal, i) => {
       const cell = el("div", i === 0 ? "compare-cell cheapest" : "compare-cell");
@@ -172,6 +187,7 @@ export function renderDetail(container, deal, allDeals) {
   fact("Sale price", formatMoney(deal.price));
   fact("Usual price", formatMoney(deal.was));
   fact("Discount", `${discountPct(deal)}% off — you save ${formatMoney(savings(deal))}`);
+  fact("Sale window", `Ends ${STORE_WINDOWS[deal.store]} — ${deal.store}'s Black Friday window`);
   fact("Price checked", fmtChecked(deal.checked));
   fact("Read from", deal.source);
   wrap.append(facts);
@@ -211,4 +227,28 @@ export function renderDetail(container, deal, allDeals) {
     wrap.append(alt);
   }
   container.append(wrap);
+}
+
+// The day's five best deals as a ranked strip — the board's front door.
+export function renderTop5(container, deals) {
+  container.replaceChildren();
+  const head = el("div", "top5-head");
+  head.append(el("h2", "top5-title", "Top 5 today"));
+  head.append(el("span", "top5-note", "Ranked by cut, savings and honesty grade"));
+  container.append(head);
+  const list = el("ol", "top5-list");
+  [...deals]
+    .sort((a, b) => scoreDeal(b) - scoreDeal(a))
+    .slice(0, 5)
+    .forEach((deal, i) => {
+      const row = el("li", "top5-row");
+      row.append(el("span", "top5-rank", String(i + 1)));
+      const link = el("a", "top5-link", deal.title);
+      link.href = `#/deal/${deal.id}`;
+      row.append(link);
+      row.append(el("span", "top5-store", deal.store));
+      row.append(el("span", "top5-price", `${formatMoney(deal.price)} · −${discountPct(deal)}%`));
+      list.append(row);
+    });
+  container.append(list);
 }

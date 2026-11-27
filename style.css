@@ -94,18 +94,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .controls > .menu-row,
 .controls > .result-count {
   background: var(--panel);
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
   padding-left: 16px;
   padding-right: 16px;
 }
 .controls > .control-row {
-  border-top: 1px solid var(--line);
   border-radius: 16px 16px 0 0;
   padding-top: 16px;
 }
 .controls > .result-count {
-  border-bottom: 1px solid var(--line);
   border-radius: 0 0 16px 16px;
   padding-bottom: 14px;
 }
@@ -167,7 +163,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
-.stat { border-top: 2px solid var(--amber); padding-top: 9px; }
+.stat { padding-top: 9px; }
 .stat-num {
   display: block;
   font-family: "Anton", "Inter", sans-serif;
@@ -200,7 +196,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
   gap: 12px;
   padding: 9px 8px;
-  border-bottom: 1px solid var(--line);
   border-radius: 8px;
 }
 .top5-row:hover { background: var(--panel); }
@@ -235,14 +230,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--panel);
-  border: 1px solid var(--line);
+  background: #17191f;
+  border: none;
   border-radius: 18px;
   padding: 14px;
   cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 34px rgba(0, 0, 0, 0.30);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.card:hover { transform: translateY(-2px); border-color: var(--faint); }
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), 0 20px 44px rgba(0, 0, 0, 0.38);
+}
 .card-media {
   border-radius: 12px;
   overflow: hidden;
@@ -341,7 +340,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   margin: 26px 0 6px;
 }
 .section-sub { color: var(--muted); font-size: 14.5px; margin: 0 0 6px; max-width: 720px; }
-.compare-row { padding: 14px 2px; border-bottom: 1px solid var(--line); }
+.compare-row {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 16px 18px 10px;
+  margin-bottom: 14px;
+}
 .compare-title { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
 .compare-cells { display: block; }
 .compare-cell {
@@ -350,10 +354,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   grid-template-areas: "store prices link" "store meta link";
   column-gap: 12px;
   align-items: baseline;
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
+  padding: 7px 0;
 }
-.compare-cell:first-child { border-top: none; padding-top: 2px; }
+.compare-cell:first-child { padding-top: 2px; }
 .compare-store { grid-area: store; font-size: 14px; font-weight: 700; }
 .compare-prices { grid-area: prices; display: inline-flex; gap: 9px; align-items: baseline; flex-wrap: wrap; }
 .compare-price { font-family: "Anton", "Inter", sans-serif; font-size: 20px; }
@@ -376,9 +379,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   max-width: 720px;
   margin: 6px auto 0;
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: none;
   border-radius: 18px;
   padding: 20px 22px 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 14px 34px rgba(0, 0, 0, 0.30);
 }
 .back-link { font-size: 14.5px; font-weight: 600; color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 18px; }
 .back-link:hover { color: var(--ink); }
@@ -396,11 +400,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .facts { display: grid; grid-template-columns: 130px 1fr; gap: 7px 16px; margin: 18px 0 4px; font-size: 14.5px; }
 .facts dt { color: var(--faint); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 2px; }
 .facts dd { margin: 0; }
-.alt-box { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 12px; }
+.alt-box { margin-top: 18px; }
 .alt-line { font-size: 14.5px; color: var(--muted); margin: 4px 0; }
 .alt-line a { color: var(--amber); font-weight: 650; text-decoration: none; }
 .seller-box {
-  border: 1px solid var(--line);
   background: var(--panel-2);
   border-radius: 14px;
   padding: 16px;
@@ -430,7 +433,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   max-width: 1120px;
   margin: 34px auto 0;
   padding: 18px 20px 42px;
-  border-top: 1px solid var(--line);
   color: var(--faint);
   font-size: 13.5px;
 }

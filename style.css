@@ -1,0 +1,268 @@
+/* DealProof: a clean price index. White ground, near-black type, hairline
+   rules instead of boxes, one quiet colour per honesty grade. Nothing on
+   the page decorates; everything either is a price or explains one. */
+
+:root {
+  --ink: #111214;
+  --muted: #68707c;
+  --faint: #9aa1ab;
+  --line: #e8e8ea;
+  --surface: #fafafa;
+  --low: #067647;
+  --strong: #175cd3;
+  --routine: #b54708;
+  --inflated: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ink); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--strong);
+  outline-offset: 2px;
+}
+
+/* Slim top bar: the wordmark alone, centred, nothing else up here. */
+.masthead {
+  text-align: center;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 30px 20px 20px;
+}
+.brand {
+  font-size: 32px;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+/* Controls: one light row, text tabs for categories. */
+.controls {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 4px 20px 0;
+  border-top: 1px solid var(--line);
+}
+.control-row { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 16px; }
+.control { display: flex; }
+.control.grow { flex: 1 1 260px; }
+.control-label {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.control input, .control select {
+  min-height: 44px;
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 15.5px;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.control select { width: auto; }
+.control input::placeholder { color: var(--faint); }
+.chips { display: flex; flex-wrap: wrap; gap: 2px 20px; margin-top: 14px; }
+.chip {
+  min-height: 40px;
+  padding: 6px 1px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+}
+.chip:hover { color: var(--ink); }
+.chip-active { color: var(--ink); font-weight: 700; border-bottom-color: var(--ink); }
+.result-count { font-size: 13.5px; color: var(--muted); margin: 10px 0 0; }
+
+/* The board: rows divided by hairlines, price set large at the right. */
+.board, .compare { max-width: 1120px; margin: 0 auto; padding: 6px 20px; }
+.grid { display: block; }
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 28px;
+  padding: 20px 2px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.card:hover { background: var(--surface); }
+.card { cursor: pointer; }
+.card-links { display: inline-flex; gap: 18px; }
+.details-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.details-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.card-top {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.badge-new-low { color: var(--low); }
+.badge-strong { color: var(--strong); }
+.badge-routine { color: var(--routine); }
+.badge-inflated { color: var(--inflated); }
+.card-title { grid-column: 1; font-size: 18px; font-weight: 650; line-height: 1.3; margin: 0; letter-spacing: -0.01em; }
+.card-title a { text-decoration: none; }
+.card-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.card-meta {
+  grid-column: 1;
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.card-prices {
+  grid-column: 2;
+  grid-row: 2 / 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  text-align: right;
+}
+.price-now {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.price-was { font-size: 14px; color: var(--faint); text-decoration: line-through; font-variant-numeric: tabular-nums; }
+.price-off { font-size: 14.5px; font-weight: 700; color: var(--low); }
+.card-saves { grid-column: 1; margin: 8px 0 0; font-size: 14px; font-weight: 600; }
+.card-evidence { grid-column: 1; margin: 4px 0 0; font-size: 14.5px; color: #3c4149; max-width: 620px; }
+.card-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.card-checked { font-size: 12.5px; color: var(--faint); }
+.store-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.store-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Empty state */
+.empty-state { padding: 36px 0; text-align: center; color: var(--muted); }
+.empty-state h2 { color: var(--ink); font-size: 19px; margin: 0 0 6px; }
+.empty-state p { margin: 0; }
+
+/* Cross-store price checks: plain rows, cheapest price in green. */
+.compare { padding-bottom: 10px; }
+.section-title { font-size: 20px; font-weight: 750; letter-spacing: -0.01em; margin: 26px 0 4px; }
+.section-sub { color: var(--muted); font-size: 14.5px; max-width: 680px; margin: 0 0 8px; }
+.compare-row { padding: 14px 2px; border-bottom: 1px solid var(--line); }
+.compare-title { margin: 0 0 8px; font-size: 15.5px; font-weight: 650; }
+.compare-cells { display: flex; flex-wrap: wrap; gap: 10px 44px; }
+.compare-cell { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.compare-store { font-size: 13px; font-weight: 600; color: var(--muted); }
+.compare-price { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.compare-cell.cheapest .compare-price { color: var(--low); }
+.compare-was { font-size: 13px; color: var(--faint); text-decoration: line-through; }
+.compare-flag { font-size: 12.5px; font-weight: 700; color: var(--low); }
+.compare-link { font-size: 13.5px; font-weight: 600; text-decoration: none; }
+.compare-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Detail view */
+.detail { max-width: 720px; margin: 0 auto; padding-top: 10px; }
+.back-link { font-size: 14.5px; font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 18px; }
+.back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.detail-title { font-size: clamp(25px, 4.5vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 6px; }
+.detail .card-prices { display: flex; flex-direction: row; align-items: baseline; gap: 12px; text-align: left; margin-top: 10px; }
+.detail-prices .price-now { font-size: 42px; }
+.detail-prices .price-was { font-size: 18px; }
+.detail-prices .price-off { font-size: 17px; }
+.why-box { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin: 18px 0; }
+.why-box h3 { margin: 0 0 5px; font-size: 15.5px; }
+.why-box p { margin: 0; font-size: 15px; color: #3c4149; }
+.facts { display: grid; grid-template-columns: 128px 1fr; gap: 7px 16px; margin: 16px 0 20px; font-size: 15px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; font-weight: 550; }
+.cta-link {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15.5px;
+  font-weight: 650;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  min-height: 48px;
+}
+.cta-link:hover { background: #2a2c30; }
+.seller-box {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-top: 6px;
+}
+.seller-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.seller-label { font-size: 13px; color: var(--muted); }
+.seller-name { font-size: 17px; font-weight: 750; }
+.seller-price { font-size: 15px; font-weight: 700; color: var(--low); font-variant-numeric: tabular-nums; }
+.seller-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.alt-box { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; }
+.alt-box h3 { font-size: 15.5px; margin: 0 0 6px; }
+.alt-line { font-size: 15px; margin: 4px 0; }
+.alt-line a { font-weight: 600; }
+
+/* Footer: one short paragraph. */
+.site-foot {
+  max-width: 1120px;
+  margin: 30px auto 0;
+  padding: 18px 20px 40px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.site-foot p { margin: 0; max-width: 760px; }
+.site-foot strong { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .masthead { padding: 16px 16px 12px; }
+  .controls, .board, .compare { padding-left: 16px; padding-right: 16px; }
+  .control-row { flex-direction: column; }
+  .control select { width: 100%; }
+  .card { grid-template-columns: minmax(0, 1fr); padding: 18px 2px 16px; }
+  .card-prices {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    text-align: left;
+    margin-top: 8px;
+  }
+  .price-now { font-size: 24px; }
+  .facts { grid-template-columns: 1fr; gap: 1px; }
+  .facts dd { margin-bottom: 8px; }
+  .site-foot { padding-left: 16px; padding-right: 16px; }
+}

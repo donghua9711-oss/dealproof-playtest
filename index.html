@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DealProof — Black Friday deals, checked and graded honestly</title>
+<meta name="description" content="A hand-checked board of real Black Friday 2026 deals. Every price read at a named store, stamped with its check time, and graded: new low, strong, routine, or inflated anchor.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2317130c'/%3E%3Cpath d='M9 17l5 5 9-11' stroke='%23ffb020' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<header class="masthead">
+  <a class="brand" href="#/">DealProof</a>
+</header>
+
+<section id="controls" class="controls" aria-label="Search and filters">
+  <div class="control-row">
+    <label class="control grow">
+      <span class="control-label">Search deals</span>
+      <input id="search" type="search" placeholder="Try “headphones”, “OLED”, “Walmart”…" autocomplete="off">
+    </label>
+    <label class="control">
+      <span class="control-label">Store</span>
+      <select id="store-select">
+        <option value="">All stores</option>
+      </select>
+    </label>
+    <label class="control">
+      <span class="control-label">Minimum discount</span>
+      <select id="min-select">
+        <option value="0">Any discount</option>
+        <option value="25">25% off or more</option>
+        <option value="40">40% off or more</option>
+        <option value="50">50% off or more</option>
+      </select>
+    </label>
+    <label class="control">
+      <span class="control-label">Sort by</span>
+      <select id="sort-select">
+        <option value="score">Best DealProof score</option>
+        <option value="discount">Biggest % off</option>
+        <option value="savings">Biggest $ saving</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+      </select>
+    </label>
+  </div>
+  <div id="cat-chips" class="chips" role="group" aria-label="Filter by category"></div>
+  <p id="result-count" class="result-count" role="status"></p>
+</section>
+
+<main id="board" class="board"></main>
+
+<section id="compare" class="compare"></section>
+
+<footer class="site-foot">
+  <p><strong>How the grades work.</strong> Every price was read at the named store on Friday 27 November 2026 and is stamped with its check time and source. <em>Verified new low</em> is the lowest price tracked for that product; <em>strong price</em> is a deep, genuine cut; <em>routine sale</em> is real but repeats through the year; <em>inflated anchor</em> means the “usual” price was freshly hiked or is a store-brand anchor, so the headline percent flatters the deal. The board is ordered by a score combining the size of the cut, the dollars saved and that grade, so the best deals come first.</p>
+</footer>
+</body>
+</html>

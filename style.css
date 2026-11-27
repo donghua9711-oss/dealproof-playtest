@@ -100,6 +100,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (min-width: 860px) {
   .grid { grid-template-columns: 1fr 1fr; }
 }
+@media (min-width: 1200px) {
+  .grid { grid-template-columns: 1fr 1fr 1fr; }
+}
 .card {
   display: flex;
   flex-direction: column;
@@ -326,23 +329,46 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .site-foot p { margin: 0; max-width: 760px; }
 .site-foot strong { color: var(--ink); }
 
-@media (max-width: 640px) {
-  .masthead { padding: 16px 16px 12px; }
-  .controls, .board, .compare { padding-left: 16px; padding-right: 16px; }
-  .control-row { flex-direction: column; }
-  .control select { width: 100%; }
-  .card { grid-template-columns: minmax(0, 1fr); padding: 18px 2px 16px; }
-  .card-prices {
-    grid-column: 1;
-    grid-row: auto;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 10px;
-    text-align: left;
-    margin-top: 8px;
+/* ——— Mobile version (phones): its own layout, not a shrunk desktop. ——— */
+@media (max-width: 760px) {
+  .masthead { padding: 20px 16px 12px; }
+  .brand { font-size: 27px; }
+  .controls, .board, .compare, .top5 { padding-left: 16px; padding-right: 16px; }
+  /* Search takes its own full row; the three pickers share one row under it. */
+  .control-row { gap: 8px; }
+  .control { flex: 1 1 0; }
+  .control.grow { flex: 1 1 100%; }
+  .control:has(#sort-select) { flex: 1 1 100%; }
+  .control input, .control select { font-size: 14.5px; padding: 9px 10px; }
+  /* Category chips become one swipeable row instead of three wrapped rows. */
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
   }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; }
+  .result-count { font-size: 13px; }
+  /* Top 5 compresses: no note, smaller thumbs, store name drops if tight. */
+  .top5 { padding-top: 12px; }
+  .top5-note { display: none; }
+  .top5-thumb { width: 36px; height: 36px; }
+  .top5-link { font-size: 14.5px; }
+  .top5-store { display: none; }
+  /* Cards: one column, wider-than-tall photos, tighter type. */
+  .grid { gap: 30px; }
+  .card-media { aspect-ratio: 16 / 10; }
+  .card-title { font-size: 17px; }
   .price-now { font-size: 24px; }
+  .card-evidence { -webkit-line-clamp: 2; }
+  .card-checked { font-size: 12px; }
+  /* Product page and compare stack cleanly. */
+  .detail-img { aspect-ratio: 4 / 3; }
+  .detail-prices .price-now { font-size: 34px; }
   .facts { grid-template-columns: 1fr; gap: 1px; }
   .facts dd { margin-bottom: 8px; }
+  .compare-cells { grid-template-columns: 1fr; }
+  .seller-box { padding: 14px; }
   .site-foot { padding-left: 16px; padding-right: 16px; }
 }

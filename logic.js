@@ -27,7 +27,7 @@ export function scoreDeal(deal) {
   return Math.max(0, Math.min(100, Math.round(pctPart + dollarsPart + signalPart)));
 }
 
-export function filterDeals(deals, { q = "", category = "", store = "", minDiscount = 0 } = {}) {
+export function filterDeals(deals, { q = "", category = "", store = "", minDiscount = 0, signal = "" } = {}) {
   const needle = q.trim().toLowerCase();
   return deals.filter((deal) => {
     if (needle) {
@@ -36,6 +36,7 @@ export function filterDeals(deals, { q = "", category = "", store = "", minDisco
     }
     if (category && deal.category !== category) return false;
     if (store && deal.store !== store) return false;
+    if (signal && deal.signal !== signal) return false;
     if (minDiscount && discountPct(deal) < minDiscount) return false;
     return true;
   });

@@ -1,9 +1,9 @@
 // DealProof wiring: hash routing, the search and filter controls, and the
 // board render. Filter state lives in the hash (#/?cat=TVs&store=Walmart),
 // so every view is a link you can share or bookmark.
-import { deals } from "./data.js";
-import { filterDeals, sortDeals } from "./logic.js";
-import { renderBoard, renderPriceChecks, renderDetail, renderTop5 } from "./views.js";
+import { deals } from "./data.js?v=10";
+import { filterDeals, sortDeals, discountPct } from "./logic.js?v=10";
+import { renderBoard, renderPriceChecks, renderDetail, renderTop5, priceCheckGroups } from "./views.js?v=10";
 
 const boardEl = document.getElementById("board");
 const compareEl = document.getElementById("compare");
@@ -11,7 +11,9 @@ const controlsEl = document.getElementById("controls");
 const searchEl = document.getElementById("search");
 const storeEl = document.getElementById("store-select");
 const minEl = document.getElementById("min-select");
+const gradeEl = document.getElementById("grade-select");
 const sortEl = document.getElementById("sort-select");
+const statsEl = document.getElementById("stats");
 const chipsEl = document.getElementById("cat-chips");
 const countEl = document.getElementById("result-count");
 const top5El = document.getElementById("top5");
@@ -74,6 +76,7 @@ function parseHash() {
       cat: params.get("cat") ?? "",
       store: params.get("store") ?? "",
       min: Number(params.get("min") ?? 0),
+      grade: params.get("grade") ?? "",
       sort: params.get("sort") ?? "score",
       saved: params.get("saved") ?? "",
       fresh: params.get("new") ?? "",
@@ -89,11 +92,37 @@ function updateHash(patch) {
   if (next.cat) params.set("cat", next.cat);
   if (next.store) params.set("store", next.store);
   if (next.min) params.set("min", String(next.min));
+  if (next.grade) params.set("grade", next.grade);
   if (next.saved) params.set("saved", next.saved);
   if (next.fresh) params.set("new", next.fresh);
   if (next.sort && next.sort !== "score") params.set("sort", next.sort);
   const qs = params.toString();
   location.hash = qs ? `/?${qs}` : "/";
+}
+
+// The board's proof of work, in four numbers — the same credibility strip
+// every serious deal board leads with.
+function renderStats() {
+  const items = [
+    [String(deals.length), "Deals checked by hand"],
+    [String(deals.filter((d) => d.signal === "new-low").length), "Verified new lows"],
+    [String(priceCheckGroups(deals).length), "Products compared across stores"],
+    [`${Math.max(...deals.map(discountPct))}%`, "Deepest verified cut"],
+  ];
+  statsEl.replaceChildren(
+    ...items.map(([num, label]) => {
+      const box = document.createElement("div");
+      box.className = "stat";
+      const n = document.createElement("span");
+      n.className = "stat-num";
+      n.textContent = num;
+      const l = document.createElement("span");
+      l.className = "stat-label";
+      l.textContent = label;
+      box.append(n, l);
+      return box;
+    }),
+  );
 }
 
 function render() {
@@ -105,6 +134,7 @@ function render() {
     controlsEl.hidden = true;
     compareEl.hidden = true;
     top5El.hidden = true;
+    statsEl.hidden = true;
     if (deal) {
       renderDetail(boardEl, deal, deals);
       countEl.textContent = "";
@@ -120,10 +150,13 @@ function render() {
 
   controlsEl.hidden = false;
   compareEl.hidden = false;
+  statsEl.hidden = false;
+  renderStats();
 
   searchEl.value = state.q;
   storeEl.value = state.store;
   minEl.value = String(state.min);
+  gradeEl.value = state.grade;
   sortEl.value = state.sort;
 
   chipsEl.replaceChildren(
@@ -150,7 +183,7 @@ function render() {
   chipsEl.append(shortlistChip);
 
   // The Top 5 strip fronts the unfiltered board only.
-  const unfiltered = !state.q && !state.cat && !state.store && !state.min && state.saved !== "1" && state.fresh !== "1";
+  const unfiltered = !state.q && !state.cat && !state.store && !state.min && !state.grade && state.saved !== "1" && state.fresh !== "1";
   top5El.hidden = !unfiltered;
   if (unfiltered) renderTop5(top5El, deals);
 
@@ -159,6 +192,7 @@ function render() {
     category: state.cat,
     store: state.store,
     minDiscount: state.min,
+    signal: state.grade,
   });
   if (state.saved === "1") filtered = filtered.filter((d) => saved.has(d.id));
   if (state.fresh === "1") filtered = filtered.filter((d) => freshIds.has(d.id));
@@ -177,6 +211,7 @@ function render() {
 searchEl.addEventListener("input", () => updateHash({ q: searchEl.value }));
 storeEl.addEventListener("change", () => updateHash({ store: storeEl.value }));
 minEl.addEventListener("change", () => updateHash({ min: Number(minEl.value) }));
+gradeEl.addEventListener("change", () => updateHash({ grade: gradeEl.value }));
 sortEl.addEventListener("change", () => updateHash({ sort: sortEl.value }));
 window.addEventListener("hashchange", render);
 

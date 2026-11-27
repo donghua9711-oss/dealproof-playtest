@@ -1,6 +1,21 @@
 /* DealProof: a clean price index. White ground, near-black type, hairline
    rules instead of boxes, one quiet colour per honesty grade. Nothing on
-   the page decorates; everything either is a price or explains one. */
+   the page decorates; everything either is a price or explains one.
+   Type: Inter for text, Space Grotesk for the wordmark, titles and prices —
+   both shipped as local variable fonts, nothing loads from a network. */
+
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/space-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
 
 :root {
   --ink: #111214;
@@ -18,15 +33,18 @@
 
 body {
   margin: 0;
-  background: #fff;
+  background: #f6f6f4;
   color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 a { color: var(--ink); }
+.section-title, .detail-title, .card-title, .compare-title {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+}
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
   outline: 2px solid var(--strong);
   outline-offset: 2px;
@@ -40,8 +58,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 30px 20px 20px;
 }
 .brand {
+  font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 32px;
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: -0.03em;
   text-decoration: none;
 }
@@ -107,9 +126,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
 }
 .card-media {
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   background: #f1f1ee;
   aspect-ratio: 4 / 3;
@@ -177,8 +200,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   margin-top: 9px;
 }
 .price-now {
+  font-family: "Space Grotesk", "Inter", sans-serif;
   font-size: 27px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1.15;
@@ -219,18 +243,43 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .section-sub { color: var(--muted); font-size: 14.5px; max-width: 680px; margin: 0 0 8px; }
 .compare-row { padding: 14px 2px; border-bottom: 1px solid var(--line); }
 .compare-title { margin: 0 0 8px; font-size: 15.5px; font-weight: 650; }
-.compare-cells { display: flex; flex-wrap: wrap; gap: 10px 44px; }
-.compare-cell { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.compare-store { font-size: 13px; font-weight: 600; color: var(--muted); }
-.compare-price { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.compare-cells { display: block; }
+.compare-cell {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  grid-template-areas: "store prices link" "store meta link";
+  column-gap: 12px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+.compare-cell:first-child { border-top: none; padding-top: 2px; }
+.compare-store { grid-area: store; font-size: 14px; font-weight: 700; }
+.compare-prices { grid-area: prices; display: inline-flex; gap: 9px; align-items: baseline; flex-wrap: wrap; }
+.compare-price { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .compare-cell.cheapest .compare-price { color: var(--low); }
 .compare-was { font-size: 13px; color: var(--faint); text-decoration: line-through; }
-.compare-flag { font-size: 12.5px; font-weight: 700; color: var(--low); }
-.compare-link { font-size: 13.5px; font-weight: 600; text-decoration: none; }
+.compare-meta { grid-area: meta; display: inline-flex; gap: 10px; align-items: center; margin-top: 2px; flex-wrap: wrap; }
+.compare-flag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--low);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.compare-link { grid-area: link; align-self: center; font-size: 13.5px; font-weight: 600; text-decoration: none; }
 .compare-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Detail view */
-.detail { max-width: 720px; margin: 0 auto; padding-top: 10px; }
+.detail {
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 22px 24px;
+}
 .back-link { font-size: 14.5px; font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 18px; }
 .back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 .detail-title { font-size: clamp(25px, 4.5vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 6px; }
@@ -268,10 +317,35 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .seller-price { font-size: 15px; font-weight: 700; color: var(--low); font-variant-numeric: tabular-nums; }
 .seller-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
 
+/* Credibility strip: four numbers, big type, small caps labels. */
+.stats {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px 20px 2px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.stat { border-top: 2px solid var(--ink); padding-top: 8px; }
+.stat-num {
+  display: block;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
 /* Top 5 strip: the day's best deals as a plain ranked list. */
 .top5 { max-width: 1120px; margin: 0 auto; padding: 18px 20px 4px; }
 .top5-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.top5-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+.top5-title { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .top5-note { font-size: 13px; color: var(--muted); }
 .top5-list { list-style: none; margin: 8px 0 0; padding: 0; }
 .top5-row {
@@ -285,7 +359,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .top5-link { font-weight: 650; text-decoration: none; flex: 1 1 auto; }
 .top5-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 .top5-store { font-size: 13.5px; color: var(--muted); flex: none; }
-.top5-price { font-weight: 750; flex: none; font-variant-numeric: tabular-nums; }
+.top5-price { font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 700; flex: none; font-variant-numeric: tabular-nums; }
 .save-btn {
   font: inherit;
   font-size: 13px;
@@ -350,6 +424,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .chips::-webkit-scrollbar { display: none; }
   .chip { flex: none; }
   .result-count { font-size: 13px; }
+  .stats { grid-template-columns: 1fr 1fr; padding: 16px 16px 0; gap: 14px; }
+  .stat-num { font-size: 24px; }
   /* Top 5 compresses: no note, smaller thumbs, store name drops if tight. */
   .top5 { padding-top: 12px; }
   .top5-note { display: none; }
@@ -358,6 +434,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .top5-store { display: none; }
   /* Cards: one column, wider-than-tall photos, tighter type. */
   .grid { gap: 30px; }
+  .card { padding: 12px; }
   .card-media { aspect-ratio: 16 / 10; }
   .card-title { font-size: 17px; }
   .price-now { font-size: 24px; }
@@ -368,7 +445,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .detail-prices .price-now { font-size: 34px; }
   .facts { grid-template-columns: 1fr; gap: 1px; }
   .facts dd { margin-bottom: 8px; }
-  .compare-cells { grid-template-columns: 1fr; }
+  .compare-cell { grid-template-columns: 84px 1fr auto; }
   .seller-box { padding: 14px; }
   .site-foot { padding-left: 16px; padding-right: 16px; }
 }

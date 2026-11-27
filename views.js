@@ -1,7 +1,7 @@
 // DealProof views: every render builds DOM nodes and sets text with
 // textContent, never innerHTML, so deal text can never become markup.
-import { discountPct, savings, scoreDeal, formatMoney } from "./logic.js";
-import { STORE_WINDOWS } from "./data.js";
+import { discountPct, savings, scoreDeal, formatMoney } from "./logic.js?v=10";
+import { STORE_WINDOWS } from "./data.js?v=10";
 
 export const SIGNAL_LABEL = {
   "new-low": "Verified new low",
@@ -195,10 +195,14 @@ export function renderPriceChecks(container, deals) {
     group.forEach((deal, i) => {
       const cell = el("div", i === 0 ? "compare-cell cheapest" : "compare-cell");
       cell.append(el("span", "compare-store", deal.store));
-      cell.append(el("span", "compare-price", formatMoney(deal.price)));
-      cell.append(el("span", "compare-was", `was ${formatMoney(deal.was)}`));
-      cell.append(signalBadge(deal));
-      if (i === 0) cell.append(el("span", "compare-flag", "Cheapest here"));
+      const prices = el("span", "compare-prices");
+      prices.append(el("span", "compare-price", formatMoney(deal.price)));
+      prices.append(el("span", "compare-was", `was ${formatMoney(deal.was)}`));
+      cell.append(prices);
+      const meta = el("span", "compare-meta");
+      meta.append(signalBadge(deal));
+      if (i === 0) meta.append(el("span", "compare-flag", "Cheapest here"));
+      cell.append(meta);
       const link = el("a", "compare-link", "Details");
       link.href = `#/deal/${deal.id}`;
       cell.append(link);

@@ -1,7 +1,7 @@
 // DealProof views: every render builds DOM nodes and sets text with
 // textContent, never innerHTML, so deal text can never become markup.
-import { discountPct, savings, scoreDeal, formatMoney } from "./logic.js?v=10";
-import { STORE_WINDOWS } from "./data.js?v=10";
+import { discountPct, savings, scoreDeal, formatMoney } from "./logic.js?v=11";
+import { STORE_WINDOWS } from "./data.js?v=11";
 
 export const SIGNAL_LABEL = {
   "new-low": "Verified new low",

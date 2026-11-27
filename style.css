@@ -1,8 +1,7 @@
-/* DealProof: a clean price index. White ground, near-black type, hairline
-   rules instead of boxes, one quiet colour per honesty grade. Nothing on
-   the page decorates; everything either is a price or explains one.
-   Type: Inter for text, Space Grotesk for the wordmark, titles and prices —
-   both shipped as local variable fonts, nothing loads from a network. */
+/* DealProof, rebuilt dark: a Black Friday board, not a newspaper.
+   Near-black ground, panel cards, one amber accent. Prices and the
+   wordmark speak in Anton — a poster face — everything else in Inter.
+   Both fonts ship as local files; nothing loads from a network. */
 
 @font-face {
   font-family: "Inter";
@@ -11,29 +10,33 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("fonts/space-grotesk.woff2") format("woff2");
-  font-weight: 300 700;
+  font-family: "Anton";
+  src: url("fonts/anton.woff2") format("woff2");
+  font-weight: 400;
   font-display: swap;
 }
 
 :root {
-  --ink: #111214;
-  --muted: #68707c;
-  --faint: #9aa1ab;
-  --line: #e8e8ea;
-  --surface: #fafafa;
-  --low: #067647;
-  --strong: #175cd3;
-  --routine: #b54708;
-  --inflated: #b42318;
+  --bg: #0a0b0d;
+  --panel: #131519;
+  --panel-2: #0e1013;
+  --line: #23262d;
+  --ink: #f5f4f0;
+  --muted: #a3aab5;
+  --faint: #6d7480;
+  --amber: #ffb224;
+  --amber-ink: #171106;
+  --low: #3ecf6f;
+  --strong: #6ea8fe;
+  --routine: #f5a524;
+  --inflated: #f97066;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: #f6f6f4;
+  background: var(--bg);
   color: var(--ink);
   font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
@@ -41,81 +44,187 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+::selection { background: var(--amber); color: var(--amber-ink); }
 a { color: var(--ink); }
-.section-title, .detail-title, .card-title, .compare-title {
-  font-family: "Space Grotesk", "Inter", sans-serif;
-}
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
-  outline: 2px solid var(--strong);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 
-/* Slim top bar: the wordmark alone, centred, nothing else up here. */
+/* ——— Top bar: wordmark left, sale chip right. ——— */
 .masthead {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 30px 20px 20px;
+  padding: 22px 20px 18px;
 }
 .brand {
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   text-decoration: none;
+  line-height: 1;
+}
+.brand::after { content: "."; color: var(--amber); }
+.bf-chip {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-ink);
+  background: var(--amber);
+  border-radius: 999px;
+  padding: 6px 12px;
+  white-space: nowrap;
 }
 
-/* Controls: one light row, text tabs for categories. */
+/* ——— Filter bar: one dark panel holding search, pickers and chips. ——— */
 .controls {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 4px 20px 0;
-  border-top: 1px solid var(--line);
+  padding: 0 20px;
 }
-.control-row { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 16px; align-items: flex-start; }
-.control { display: flex; }
-.control.grow { flex: 1 1 260px; }
+.controls > .control-row,
+.controls > .chips,
+.controls > .menu-row,
+.controls > .result-count {
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.controls > .control-row {
+  border-top: 1px solid var(--line);
+  border-radius: 16px 16px 0 0;
+  padding-top: 16px;
+}
+.controls > .result-count {
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 0 16px 16px;
+  padding-bottom: 14px;
+}
+.control-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.control { display: flex; flex-direction: column; gap: 6px; flex: 0 1 auto; }
+.control.grow { flex: 1 1 220px; }
 .control-label {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--faint);
 }
 .control input, .control select {
-  height: 46px;
-  width: 100%;
-  padding: 9px 12px;
-  font-size: 15.5px;
-  font-family: inherit;
+  font: inherit;
+  font-size: 15px;
   color: var(--ink);
-  background: #fff;
+  background: var(--panel-2);
   border: 1px solid var(--line);
   border-radius: 10px;
+  padding: 10px 12px;
+  height: 46px;
+  width: 100%;
 }
-.control select { width: auto; }
 .control input::placeholder { color: var(--faint); }
-.chips { display: flex; flex-wrap: wrap; gap: 2px 20px; margin-top: 14px; }
+.control select { cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
 .chip {
-  min-height: 40px;
-  padding: 6px 1px;
-  font-size: 15px;
-  font-family: inherit;
-  font-weight: 500;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--muted);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
   cursor: pointer;
 }
-.chip:hover { color: var(--ink); }
-.chip-active { color: var(--ink); font-weight: 700; border-bottom-color: var(--ink); }
-.result-count { font-size: 13.5px; color: var(--muted); margin: 10px 0 0; }
+.chip:hover { color: var(--ink); border-color: var(--faint); }
+.chip-active { background: var(--amber); border-color: var(--amber); color: var(--amber-ink); }
+.chip-active:hover { color: var(--amber-ink); }
+.menu-row { display: flex; gap: 20px; padding-top: 12px; }
+.menu-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+.menu-link:hover { color: var(--ink); }
+.menu-link.active { color: var(--amber); }
+.result-count { margin: 0; padding-top: 10px; font-size: 13.5px; color: var(--faint); }
 
-/* The board: rows divided by hairlines, price set large at the right. */
+/* ——— Credibility strip: four numbers in Anton. ——— */
+.stats {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 22px 20px 2px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.stat { border-top: 2px solid var(--amber); padding-top: 9px; }
+.stat-num {
+  display: block;
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.stat-label {
+  font-size: 11.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ——— Top 5 strip. ——— */
+.top5 { max-width: 1120px; margin: 0 auto; padding: 20px 20px 4px; }
+.top5-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.top5-title {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 21px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.top5-note { font-size: 13px; color: var(--faint); }
+.top5-list { list-style: none; margin: 0; padding: 0; }
+.top5-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 8px;
+}
+.top5-row:hover { background: var(--panel); }
+.top5-rank {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 19px;
+  color: var(--amber);
+  width: 20px;
+  flex: none;
+  text-align: right;
+}
+.top5-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; flex: none; background: #ececea; }
+.top5-link { font-weight: 650; text-decoration: none; flex: 1 1 auto; min-width: 0; }
+.top5-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.top5-store { color: var(--faint); font-size: 13.5px; flex: none; }
+.top5-price {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 17px;
+  flex: none;
+}
+
+/* ——— Deal cards: dark panels, photo on top, poster prices. ——— */
 .board, .compare { max-width: 1120px; margin: 0 auto; padding: 6px 20px; }
-.grid { display: grid; grid-template-columns: 1fr; gap: 38px 26px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 22px; padding-top: 14px; }
 @media (min-width: 860px) {
   .grid { grid-template-columns: 1fr 1fr; }
 }
@@ -126,123 +235,114 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #fff;
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
+.card:hover { transform: translateY(-2px); border-color: var(--faint); }
 .card-media {
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #f1f1ee;
+  background: #ececea;
   aspect-ratio: 4 / 3;
+  margin-bottom: 13px;
 }
-.card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.35s ease;
-}
+.card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.25s ease; }
 .card:hover .card-img { transform: scale(1.03); }
-.detail-img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 14px;
-  background: #f1f1ee;
-  display: block;
-  margin: 14px 0 4px;
-}
-.top5-thumb {
-  width: 42px;
-  height: 42px;
-  border-radius: 9px;
-  object-fit: cover;
-  flex: none;
-  align-self: center;
-  background: #f1f1ee;
-}
-.card { cursor: pointer; }
-.card-links { display: inline-flex; gap: 18px; }
-.details-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-.details-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 13px 0 6px;
-}
+.card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
-.badge-new-low { color: var(--low); }
-.badge-strong { color: var(--strong); }
-.badge-routine { color: var(--routine); }
-.badge-inflated { color: var(--inflated); }
-.card-title { font-size: 18px; font-weight: 650; line-height: 1.3; margin: 0; letter-spacing: -0.01em; }
-.card-title a { text-decoration: none; }
-.card-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.card-meta {
-  margin: 3px 0 0;
-  font-size: 13.5px;
+.badge.new-low { color: var(--low); }
+.badge.strong { color: var(--strong); }
+.badge.routine { color: var(--routine); }
+.badge.inflated { color: var(--inflated); }
+.new-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+.save-btn {
+  margin-left: auto;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  flex: none;
 }
-.card-prices {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: 9px;
-}
+.save-btn:hover { color: var(--ink); border-color: var(--faint); }
+.save-btn.saved { color: var(--amber); border-color: var(--amber); }
+.card-title { font-size: 17.5px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; margin: 0 0 4px; }
+.card-meta { font-size: 13.5px; color: var(--faint); margin-bottom: 10px; }
+.card-prices { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .price-now {
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  font-size: 27px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.15;
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 31px;
+  line-height: 1.05;
 }
-.price-was { font-size: 14px; color: var(--faint); text-decoration: line-through; font-variant-numeric: tabular-nums; }
-.price-off { font-size: 14.5px; font-weight: 700; color: var(--low); }
-.card-saves { margin: 6px 0 0; font-size: 14px; font-weight: 600; }
+.price-was { font-size: 15px; color: var(--faint); text-decoration: line-through; }
+.price-off {
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-radius: 7px;
+  padding: 3px 8px;
+}
+.card-saves { font-size: 14px; font-weight: 650; color: var(--low); margin-top: 7px; }
 .card-evidence {
-  margin: 6px 0 0;
-  font-size: 14.5px;
-  color: #3c4149;
+  font-size: 14px;
+  color: var(--muted);
+  margin: 9px 0 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.card-checked { font-size: 12.5px; color: var(--faint); margin-top: 9px; }
 .card-foot {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: 13px;
 }
-.card-checked { font-size: 12.5px; color: var(--faint); }
-.store-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-.store-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.card-links { display: flex; gap: 18px; align-items: center; }
+.details-link { font-size: 14px; font-weight: 600; color: var(--muted); text-decoration: none; }
+.details-link:hover { color: var(--ink); }
+.cta-link { font-size: 14.5px; font-weight: 750; color: var(--amber); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { text-align: center; color: var(--muted); padding: 44px 10px; font-size: 15.5px; }
 
-/* Empty state */
-.empty-state { padding: 36px 0; text-align: center; color: var(--muted); }
-.empty-state h2 { color: var(--ink); font-size: 19px; margin: 0 0 6px; }
-.empty-state p { margin: 0; }
-
-/* Cross-store price checks: plain rows, cheapest price in green. */
-.compare { padding-bottom: 10px; }
-.section-title { font-size: 20px; font-weight: 750; letter-spacing: -0.01em; margin: 26px 0 4px; }
-.section-sub { color: var(--muted); font-size: 14.5px; max-width: 680px; margin: 0 0 8px; }
+/* ——— Cross-store comparison. ——— */
+.compare { padding-bottom: 12px; }
+.section-title {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 26px 0 6px;
+}
+.section-sub { color: var(--muted); font-size: 14.5px; margin: 0 0 6px; max-width: 720px; }
 .compare-row { padding: 14px 2px; border-bottom: 1px solid var(--line); }
-.compare-title { margin: 0 0 8px; font-size: 15.5px; font-weight: 650; }
+.compare-title { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
 .compare-cells { display: block; }
 .compare-cell {
   display: grid;
@@ -256,196 +356,128 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .compare-cell:first-child { border-top: none; padding-top: 2px; }
 .compare-store { grid-area: store; font-size: 14px; font-weight: 700; }
 .compare-prices { grid-area: prices; display: inline-flex; gap: 9px; align-items: baseline; flex-wrap: wrap; }
-.compare-price { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.compare-cell.cheapest .compare-price { color: var(--low); }
+.compare-price { font-family: "Anton", "Inter", sans-serif; font-size: 20px; }
+.compare-cell.cheapest .compare-price { color: var(--amber); }
 .compare-was { font-size: 13px; color: var(--faint); text-decoration: line-through; }
 .compare-meta { grid-area: meta; display: inline-flex; gap: 10px; align-items: center; margin-top: 2px; flex-wrap: wrap; }
 .compare-flag {
   font-size: 12px;
   font-weight: 700;
-  color: var(--low);
+  color: var(--amber);
   border: 1px solid currentColor;
   border-radius: 999px;
   padding: 1px 8px;
 }
-.compare-link { grid-area: link; align-self: center; font-size: 13.5px; font-weight: 600; text-decoration: none; }
-.compare-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.compare-link { grid-area: link; align-self: center; font-size: 13.5px; font-weight: 600; color: var(--muted); text-decoration: none; }
+.compare-link:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Detail view */
+/* ——— Product page. ——— */
 .detail {
   max-width: 720px;
-  margin: 0 auto;
-  background: #fff;
+  margin: 6px auto 0;
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 20px 22px 24px;
 }
-.back-link { font-size: 14.5px; font-weight: 600; text-decoration: none; display: inline-block; margin-bottom: 18px; }
-.back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.detail-title { font-size: clamp(25px, 4.5vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 6px; }
-.detail .card-prices { display: flex; flex-direction: row; align-items: baseline; gap: 12px; text-align: left; margin-top: 10px; }
-.detail-prices .price-now { font-size: 42px; }
-.detail-prices .price-was { font-size: 18px; }
-.detail-prices .price-off { font-size: 17px; }
-.why-box { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin: 18px 0; }
-.why-box h3 { margin: 0 0 5px; font-size: 15.5px; }
-.why-box p { margin: 0; font-size: 15px; color: #3c4149; }
-.facts { display: grid; grid-template-columns: 128px 1fr; gap: 7px 16px; margin: 16px 0 20px; font-size: 15px; }
-.facts dt { color: var(--muted); }
-.facts dd { margin: 0; font-weight: 550; }
-.cta-link {
-  display: inline-block;
-  background: var(--ink);
-  color: #fff;
-  font-size: 15.5px;
-  font-weight: 650;
-  text-decoration: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  min-height: 48px;
+.back-link { font-size: 14.5px; font-weight: 600; color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 18px; }
+.back-link:hover { color: var(--ink); }
+.detail-img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; background: #ececea; margin-bottom: 16px; display: block; }
+.detail-title {
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: clamp(26px, 4.5vw, 36px);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.12;
+  margin: 4px 0 6px;
 }
-.cta-link:hover { background: #2a2c30; }
+.detail-prices { margin-top: 10px; }
+.detail-prices .price-now { font-size: 42px; }
+.facts { display: grid; grid-template-columns: 130px 1fr; gap: 7px 16px; margin: 18px 0 4px; font-size: 14.5px; }
+.facts dt { color: var(--faint); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 2px; }
+.facts dd { margin: 0; }
+.alt-box { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 12px; }
+.alt-line { font-size: 14.5px; color: var(--muted); margin: 4px 0; }
+.alt-line a { color: var(--amber); font-weight: 650; text-decoration: none; }
 .seller-box {
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-top: 6px;
+  background: var(--panel-2);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 20px;
 }
-.seller-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-.seller-label { font-size: 13px; color: var(--muted); }
+.seller-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 13px; }
+.seller-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--faint); }
 .seller-name { font-size: 17px; font-weight: 750; }
-.seller-price { font-size: 15px; font-weight: 700; color: var(--low); font-variant-numeric: tabular-nums; }
-.seller-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
-
-/* Credibility strip: four numbers, big type, small caps labels. */
-.stats {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 20px 20px 2px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-.stat { border-top: 2px solid var(--ink); padding-top: 8px; }
-.stat-num {
+.seller-price { font-family: "Anton", "Inter", sans-serif; font-size: 19px; color: var(--amber); margin-left: auto; }
+.seller-box .cta-link {
   display: block;
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-.stat-label {
-  font-size: 12px;
-  color: var(--muted);
+  text-align: center;
+  font-family: "Anton", "Inter", sans-serif;
+  font-size: 17px;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.03em;
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-radius: 12px;
+  padding: 13px 16px;
 }
+.seller-box .cta-link:hover { text-decoration: none; filter: brightness(1.07); }
+.seller-note { font-size: 12.5px; color: var(--faint); margin: 11px 0 0; text-align: center; }
 
-/* Top 5 strip: the day's best deals as a plain ranked list. */
-.top5 { max-width: 1120px; margin: 0 auto; padding: 18px 20px 4px; }
-.top5-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.top5-title { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-.top5-note { font-size: 13px; color: var(--muted); }
-.top5-list { list-style: none; margin: 8px 0 0; padding: 0; }
-.top5-row {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding: 8px 0;
-  border-top: 1px solid var(--line);
-}
-.top5-rank { font-size: 14px; font-weight: 800; color: var(--faint); width: 18px; flex: none; font-variant-numeric: tabular-nums; }
-.top5-link { font-weight: 650; text-decoration: none; flex: 1 1 auto; }
-.top5-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.top5-store { font-size: 13.5px; color: var(--muted); flex: none; }
-.top5-price { font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 700; flex: none; font-variant-numeric: tabular-nums; }
-.save-btn {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 4px 11px;
-  cursor: pointer;
-}
-.save-btn:hover { color: var(--ink); border-color: var(--faint); }
-.save-btn.saved { color: var(--ink); border-color: var(--ink); }
-.new-tag {
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--ink);
-  border-radius: 999px;
-  padding: 3px 9px;
-  margin-right: auto;
-}
-.card-top .save-btn { margin-left: auto; }
-.card-top .new-tag + .save-btn { margin-left: 0; }
-.alt-box { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; }
-.alt-box h3 { font-size: 15.5px; margin: 0 0 6px; }
-.alt-line { font-size: 15px; margin: 4px 0; }
-.alt-line a { font-weight: 600; }
-
-/* Footer: one short paragraph. */
+/* ——— Footer. ——— */
 .site-foot {
   max-width: 1120px;
-  margin: 30px auto 0;
-  padding: 18px 20px 40px;
+  margin: 34px auto 0;
+  padding: 18px 20px 42px;
   border-top: 1px solid var(--line);
-  color: var(--muted);
+  color: var(--faint);
   font-size: 13.5px;
 }
 .site-foot p { margin: 0; max-width: 760px; }
-.site-foot strong { color: var(--ink); }
+.site-foot strong { color: var(--muted); }
 
-/* ——— Mobile version (phones): its own layout, not a shrunk desktop. ——— */
+/* ——— Mobile version: its own layout, not a shrunk desktop. ——— */
 @media (max-width: 760px) {
-  .masthead { padding: 20px 16px 12px; }
-  .brand { font-size: 27px; }
-  .controls, .board, .compare, .top5 { padding-left: 16px; padding-right: 16px; }
-  /* Search takes its own full row; the three pickers share one row under it. */
-  .control-row { gap: 8px; }
-  .control { flex: 1 1 0; }
+  .masthead { padding: 18px 16px 14px; }
+  .brand { font-size: 28px; }
+  .bf-chip { font-size: 10.5px; padding: 5px 10px; }
+  .controls, .board, .compare, .top5, .stats { padding-left: 16px; padding-right: 16px; }
+  .controls { padding-left: 16px; padding-right: 16px; }
+  /* Search takes its own full row; the four pickers pair up two by two. */
+  .control { flex: 1 1 42%; }
   .control.grow { flex: 1 1 100%; }
-  .control:has(#sort-select) { flex: 1 1 100%; }
+  .control-label { font-size: 10.5px; letter-spacing: 0.08em; white-space: nowrap; }
   .control input, .control select { font-size: 14.5px; padding: 9px 10px; }
-  /* Category chips become one swipeable row instead of three wrapped rows. */
-  .chips {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
+  /* Category chips become one swipeable row. */
+  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 6px; }
   .chips::-webkit-scrollbar { display: none; }
   .chip { flex: none; }
   .result-count { font-size: 13px; }
-  .stats { grid-template-columns: 1fr 1fr; padding: 16px 16px 0; gap: 14px; }
-  .stat-num { font-size: 24px; }
-  /* Top 5 compresses: no note, smaller thumbs, store name drops if tight. */
-  .top5 { padding-top: 12px; }
+  .stats { grid-template-columns: 1fr 1fr; padding-top: 18px; gap: 14px; }
+  .stat-num { font-size: 27px; }
+  /* Top 5 compresses. */
+  .top5 { padding-top: 16px; }
   .top5-note { display: none; }
   .top5-thumb { width: 36px; height: 36px; }
   .top5-link { font-size: 14.5px; }
   .top5-store { display: none; }
-  /* Cards: one column, wider-than-tall photos, tighter type. */
-  .grid { gap: 30px; }
+  /* Cards: one column, wider-than-tall photos. */
+  .grid { gap: 18px; }
   .card { padding: 12px; }
   .card-media { aspect-ratio: 16 / 10; }
   .card-title { font-size: 17px; }
-  .price-now { font-size: 24px; }
+  .price-now { font-size: 28px; }
   .card-evidence { -webkit-line-clamp: 2; }
   .card-checked { font-size: 12px; }
-  /* Product page and compare stack cleanly. */
+  .compare-cell { grid-template-columns: 84px 1fr auto; }
+  .section-title { font-size: 19px; }
+  /* Product page stacks cleanly. */
+  .detail { padding: 16px; }
   .detail-img { aspect-ratio: 4 / 3; }
-  .detail-prices .price-now { font-size: 34px; }
+  .detail-prices .price-now { font-size: 36px; }
   .facts { grid-template-columns: 1fr; gap: 1px; }
   .facts dd { margin-bottom: 8px; }
-  .compare-cell { grid-template-columns: 84px 1fr auto; }
   .seller-box { padding: 14px; }
   .site-foot { padding-left: 16px; padding-right: 16px; }
 }

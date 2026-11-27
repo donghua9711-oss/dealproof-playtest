@@ -1,9 +1,9 @@
 // DealProof wiring: hash routing, the search and filter controls, and the
 // board render. Filter state lives in the hash (#/?cat=TVs&store=Walmart),
 // so every view is a link you can share or bookmark.
-import { deals } from "./data.js?v=10";
-import { filterDeals, sortDeals, discountPct } from "./logic.js?v=10";
-import { renderBoard, renderPriceChecks, renderDetail, renderTop5, priceCheckGroups } from "./views.js?v=10";
+import { deals } from "./data.js?v=11";
+import { filterDeals, sortDeals, discountPct } from "./logic.js?v=11";
+import { renderBoard, renderPriceChecks, renderDetail, renderTop5, priceCheckGroups } from "./views.js?v=11";
 
 const boardEl = document.getElementById("board");
 const compareEl = document.getElementById("compare");

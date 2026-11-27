@@ -17,8 +17,7 @@ const countEl = document.getElementById("result-count");
 const top5El = document.getElementById("top5");
 
 // The shopper's shortlist, kept on this device only.
-const saved = new Set();
-try {
+const saved = new Set();try {
   for (const id of JSON.parse(localStorage.getItem("dealproof.saved") ?? "[]")) saved.add(id);
 } catch {
   // Storage unavailable (private mode, sandbox): the shortlist just won't persist.
@@ -33,6 +32,15 @@ function toggleSave(id) {
   }
   render();
 }
+
+// "New discounts": the twelve most recently checked deals get their own menu,
+// so a fresh price drop is one tap away instead of buried in the board.
+const freshIds = new Set(
+  [...deals]
+    .sort((a, b) => b.checked.localeCompare(a.checked))
+    .slice(0, 12)
+    .map((d) => d.id),
+);
 
 const categories = [...new Set(deals.map((d) => d.category))].sort();
 const stores = [...new Set(deals.map((d) => d.store))].sort();
@@ -51,7 +59,7 @@ function chip(label, value, active) {
   b.textContent = label;
   b.dataset.cat = value;
   b.setAttribute("aria-pressed", active ? "true" : "false");
-  b.addEventListener("click", () => updateHash({ cat: value }));
+  b.addEventListener("click", () => updateHash({ cat: value, saved: "", fresh: "" }));
   return b;
 }
 
@@ -68,6 +76,7 @@ function parseHash() {
       min: Number(params.get("min") ?? 0),
       sort: params.get("sort") ?? "score",
       saved: params.get("saved") ?? "",
+      fresh: params.get("new") ?? "",
     },
   };
 }
@@ -81,6 +90,7 @@ function updateHash(patch) {
   if (next.store) params.set("store", next.store);
   if (next.min) params.set("min", String(next.min));
   if (next.saved) params.set("saved", next.saved);
+  if (next.fresh) params.set("new", next.fresh);
   if (next.sort && next.sort !== "score") params.set("sort", next.sort);
   const qs = params.toString();
   location.hash = qs ? `/?${qs}` : "/";
@@ -117,21 +127,30 @@ function render() {
   sortEl.value = state.sort;
 
   chipsEl.replaceChildren(
-    chip("All categories", "", state.cat === "" && state.saved !== "1"),
+    chip("All categories", "", state.cat === "" && state.saved !== "1" && state.fresh !== "1"),
     ...categories.map((c) => chip(c, c, state.cat === c)),
   );
+  const freshChip = document.createElement("button");
+  freshChip.type = "button";
+  freshChip.className = state.fresh === "1" ? "chip chip-active" : "chip";
+  freshChip.textContent = `✦ New discounts (${freshIds.size})`;
+  freshChip.setAttribute("aria-pressed", state.fresh === "1" ? "true" : "false");
+  freshChip.addEventListener("click", () =>
+    updateHash({ fresh: state.fresh === "1" ? "" : "1", cat: "", saved: "" }),
+  );
+  chipsEl.append(freshChip);
   const shortlistChip = document.createElement("button");
   shortlistChip.type = "button";
   shortlistChip.className = state.saved === "1" ? "chip chip-active" : "chip";
   shortlistChip.textContent = `★ Shortlist (${saved.size})`;
   shortlistChip.setAttribute("aria-pressed", state.saved === "1" ? "true" : "false");
   shortlistChip.addEventListener("click", () =>
-    updateHash({ saved: state.saved === "1" ? "" : "1", cat: "" }),
+    updateHash({ saved: state.saved === "1" ? "" : "1", cat: "", fresh: "" }),
   );
   chipsEl.append(shortlistChip);
 
   // The Top 5 strip fronts the unfiltered board only.
-  const unfiltered = !state.q && !state.cat && !state.store && !state.min && state.saved !== "1";
+  const unfiltered = !state.q && !state.cat && !state.store && !state.min && state.saved !== "1" && state.fresh !== "1";
   top5El.hidden = !unfiltered;
   if (unfiltered) renderTop5(top5El, deals);
 
@@ -142,12 +161,16 @@ function render() {
     minDiscount: state.min,
   });
   if (state.saved === "1") filtered = filtered.filter((d) => saved.has(d.id));
-  const list = sortDeals(filtered, state.sort);
+  if (state.fresh === "1") filtered = filtered.filter((d) => freshIds.has(d.id));
+  const list =
+    state.fresh === "1"
+      ? [...filtered].sort((a, b) => b.checked.localeCompare(a.checked))
+      : sortDeals(filtered, state.sort);
   countEl.textContent =
     list.length === deals.length
       ? `Showing all ${list.length} deals, best score first`
       : `Showing ${list.length} of ${deals.length} deals`;
-  renderBoard(boardEl, list, { saved, onToggleSave: toggleSave });
+  renderBoard(boardEl, list, { saved, fresh: freshIds, onToggleSave: toggleSave });
   renderPriceChecks(compareEl, deals);
 }
 

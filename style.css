@@ -261,6 +261,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .save-btn:hover { color: var(--ink); border-color: var(--faint); }
 .save-btn.saved { color: var(--ink); border-color: var(--ink); }
+.new-tag {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-right: auto;
+}
+.card-top .save-btn { margin-left: auto; }
+.card-top .new-tag + .save-btn { margin-left: 0; }
 .alt-box { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; }
 .alt-box h3 { font-size: 15.5px; margin: 0 0 6px; }
 .alt-line { font-size: 15px; margin: 4px 0; }

@@ -37,6 +37,7 @@ export function dealCard(deal, opts = {}) {
 
   const top = el("div", "card-top");
   top.append(signalBadge(deal));
+  if (opts.fresh) top.append(el("span", "new-tag", "New"));
   const saveBtn = el("button", `save-btn${opts.saved ? " saved" : ""}`, opts.saved ? "★ Saved" : "☆ Save");
   saveBtn.type = "button";
   saveBtn.addEventListener("click", () => {
@@ -98,7 +99,11 @@ export function renderBoard(container, list, opts = {}) {
   const grid = el("div", "grid");
   for (const deal of list) {
     grid.append(
-      dealCard(deal, { saved: opts.saved?.has(deal.id) ?? false, onToggleSave: opts.onToggleSave }),
+      dealCard(deal, {
+        saved: opts.saved?.has(deal.id) ?? false,
+        fresh: opts.fresh?.has(deal.id) ?? false,
+        onToggleSave: opts.onToggleSave,
+      }),
     );
   }
   container.append(grid);
